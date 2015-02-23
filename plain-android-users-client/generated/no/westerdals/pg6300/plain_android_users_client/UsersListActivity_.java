@@ -13,6 +13,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.TextView;
 import no.westerdals.pg6300.plain_android_users_client.R.id;
+import org.androidannotations.api.BackgroundExecutor;
 import org.androidannotations.api.builder.ActivityIntentBuilder;
 import org.androidannotations.api.view.HasViews;
 import org.androidannotations.api.view.OnViewChangedListener;
@@ -35,6 +36,8 @@ public final class UsersListActivity_
 
     private void init_(Bundle savedInstanceState) {
         OnViewChangedNotifier.registerOnViewChangedListener(this);
+        userClient = new UserClient_(this);
+        loadUsers();
     }
 
     @Override
@@ -76,6 +79,24 @@ public final class UsersListActivity_
             );
         }
         afterViews();
+    }
+
+    @Override
+    public void loadUsers() {
+        BackgroundExecutor.execute(new BackgroundExecutor.Task("", 0, "") {
+
+
+            @Override
+            public void execute() {
+                try {
+                    UsersListActivity_.super.loadUsers();
+                } catch (Throwable e) {
+                    Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
+                }
+            }
+
+        }
+        );
     }
 
     public static class IntentBuilder_
